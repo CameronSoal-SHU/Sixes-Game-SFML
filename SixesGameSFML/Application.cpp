@@ -1,5 +1,4 @@
 #include "Application.h"
-#include "GameData.h"
 #include "Time.h"
 #include "RandomNumberGenerator.h"
 
@@ -30,7 +29,7 @@ void Application::Run()
 					m_renderWindow.close();
 				// Check if ASCII char was typed
 				if (event.text.unicode < GameConstants::ASCII_LIMIT)
-					m_mainGame.TextEntered(event.text.unicode);
+					m_mainGame.TextEntered(event.text.unicode);	// Store the input taken
 			}
 		}
 

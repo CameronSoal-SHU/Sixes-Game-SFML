@@ -1,0 +1,14 @@
+﻿  Application.cpp
+c:\users\cameron\documents\github\sixes-game-sfml\sixesgamesfml\gamedata.h(2): fatal error C1083: Cannot open include file: 'SFML/Graphics.hpp': No such file or directory
+  GameManager.cpp
+  IOHandler.cpp
+c:\users\cameron\documents\github\sixes-game-sfml\sixesgamesfml\iohandler.h(2): fatal error C1083: Cannot open include file: 'SFML/Graphics.hpp': No such file or directory
+  MainGame.cpp
+c:\users\cameron\documents\github\sixes-game-sfml\sixesgamesfml\gamedata.h(2): fatal error C1083: Cannot open include file: 'SFML/Graphics.hpp': No such file or directory
+  Player.cpp
+  RandomNumberGenerator.cpp
+  Source.cpp
+c:\users\cameron\documents\github\sixes-game-sfml\sixesgamesfml\gamedata.h(2): fatal error C1083: Cannot open include file: 'SFML/Graphics.hpp': No such file or directory
+  Time.cpp
+c:\users\cameron\documents\github\sixes-game-sfml\sixesgamesfml\time.h(2): fatal error C1083: Cannot open include file: 'SFML/Graphics.hpp': No such file or directory
+  Generating Code...

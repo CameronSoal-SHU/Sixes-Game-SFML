@@ -9,24 +9,27 @@ bool IOHandler::WithinBounds(float val, float min, float max)
 	return !(val < min || val > max); // Make sure value is within boundaries
 }
 
-void IOHandler::AlphaNumericInput()
-{}
-
-void IOHandler::AlphaInput()
-{}
-
-void IOHandler::NumericInput()
+bool IOHandler::WithinBounds(int val, int min, int max)
 {
-	if (lastInput == GameConstants::BACKSPACE)
-	{
+	return !(val < min || val > max); // Make sure value is within boundaries
+}
+
+void IOHandler::AlphaNumericInput() { 
+}
+
+void IOHandler::AlphaInput() {
+
+}
+
+void IOHandler::NumericInput() {
+	if (lastInput == GameConstants::BACKSPACE) {
 		if (inputBuffer.length() > 1)
 			inputBuffer.erase(inputBuffer.end() - 1);	// Remove last character
 		else
 			inputBuffer = "0";							// Always make an empty numeric input buffer default to 0
 	}
 	// Only take numbers 0-9
-	else if (!(lastInput < GameConstants::NUM_MIN || lastInput > GameConstants::NUM_MAX))
-	{
+	else if (WithinBounds(lastInput, GameConstants::NUM_MIN, GameConstants::NUM_MAX)) {
 		// Check if the default needs to be replaced
 		if (inputBuffer == "0")
 			inputBuffer = lastInput;						// Remove proceeding 0
@@ -36,8 +39,7 @@ void IOHandler::NumericInput()
 }
 
 // Reset the buffer and last input
-void IOHandler::Flush()
-{
+void IOHandler::Flush() {
 	inputBuffer = "";
 	lastInput = NULL;
 }

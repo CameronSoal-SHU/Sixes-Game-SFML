@@ -17,10 +17,14 @@ public:
 	static GameData gameData;
 	static GameSettings gameSettings;
 private:
-	Player m_player;
+	bool inputValid = true;
 	unsigned m_diceResult;
+	Player m_player;
 	GameManager m_gameManager;
 
+	void RenderMessage(const std::string& msg);
+
+	// Menus to render
 	void RenderMainMenu();
 	void RenderBettingScreen();
 	void RenderReturnToBettingScreen();

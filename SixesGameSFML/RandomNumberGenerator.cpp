@@ -16,7 +16,7 @@ void RandomNumberGenerator::GenerateSeed(unsigned seed)
 	printf_s("Seed Generated: %u\n", seed);
 }
 
-unsigned RandomNumberGenerator::GenerateRandomInt(int maxValue)
+unsigned RandomNumberGenerator::GenerateRandomUnsigned(int maxValue)
 {
 	unsigned intGenerated = (rand() % maxValue) + 1;
 	printf_s("Integer Generated: %u\n", intGenerated);

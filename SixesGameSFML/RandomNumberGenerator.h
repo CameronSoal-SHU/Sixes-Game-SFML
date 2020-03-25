@@ -6,6 +6,6 @@ public:
 	static void GenerateSeed();
 	static void GenerateSeed(unsigned s);
 
-	static unsigned GenerateRandomInt(int max);
+	static unsigned GenerateRandomUnsigned(int max);
 private:
 };

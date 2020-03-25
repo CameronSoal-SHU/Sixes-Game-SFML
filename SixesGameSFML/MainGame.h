@@ -2,6 +2,7 @@
 #include "GameData.h"
 #include "GameManager.h"
 #include "Player.h"
+#include "Dice.h"
 
 class MainGame
 {
@@ -17,16 +18,17 @@ public:
 	static GameData gameData;
 	static GameSettings gameSettings;
 private:
-	bool inputValid = true;
-	unsigned m_diceResult;
-	Player m_player;
 	GameManager m_gameManager;
+	bool inputValid = true;
+	Player m_player;
+	Dice m_die = Dice(3.f);
 
 	void RenderMessage(const std::string& msg);
 
 	// Menus to render
 	void RenderMainMenu();
 	void RenderBettingScreen();
+	void RenderDiceRolling();
 	void RenderReturnToBettingScreen();
 	void RenderDiceResult();
 	void RenderWinMenu();

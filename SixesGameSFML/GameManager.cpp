@@ -23,19 +23,26 @@ void GameManager::OnStateChange(GameManager::game_state newState)
 		printf_s("State changed to: ");
 		switch (newState)
 		{
-		case GameManager::INIT:
+		case INIT:
 			printf_s("Init!\n");
 			break;
-		case GameManager::MAIN_MENU:
+		case MAIN_MENU:
 			printf_s("Main Menu!\n");
 			break;
-		case GameManager::BETTING_MENU:
+		case BETTING_MENU:
 			printf_s("Betting Menu!\n");
 			break;
-		case GameManager::ROLL_DICE:
+		case ROLL_DICE:
 			printf_s("Roll Dice!\n");
 			break;
+		case WIN:
+			printf_s("Win!\n");
+			break;
+		case LOSS:
+			printf_s("Loss!\n");
+			break;
 		default:
+			printf_s("UNKNOWN!\n");
 			break;
 		}
 

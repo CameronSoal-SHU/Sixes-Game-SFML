@@ -34,70 +34,24 @@ void MainGame::Update() {
 		IOHandler::NumericInput();										// Only accept numeric inputs for pot amount
 
 		if (IOHandler::lastInput == GameConstants::RETURN_KEY) {
-			const unsigned potAmount = stoi(IOHandler::inputBuffer);
-
-			if (inputValid = (potAmount > 0)) {							// Check if the pot amount is valid
-				printf_s("Pot Amount Valid!\n");
-
-				m_player.SetPlayerBalance(potAmount);					// If so, set the balance and rolls remaining
-				m_player.SetRollsRemaining((int)floorf((float)potAmount / gameSettings.m_costPerDice));
-
-				IOHandler::inputBuffer = "0";							// Reset input buffer for betting screen
-				m_gameManager.OnStateChange(GameManager::BETTING_MENU);	// Change to betting screen
-			}
-			else {
-				printf_s("Pot Amount Invalid!\n");
-				IOHandler::inputBuffer = "0";
-			}
+			MainMenuLogic();
 		}
 		break;
 	case GameManager::BETTING_MENU:
 		IOHandler::NumericInput();
 
 		if (IOHandler::lastInput == GameConstants::RETURN_KEY && m_player.GetPlayerBalance() != 0) {
-			const unsigned bettingAmount = stoi(IOHandler::inputBuffer);
-
-			if (inputValid = (bettingAmount > 0 &&						// Is the input valid and affordable?
-				bettingAmount <= (unsigned)(m_player.GetPlayerBalance() / gameSettings.m_costPerDice))) {
-				printf_s("Betting Amount Valid!\n");
-
-				m_player.SetRollsRemaining(bettingAmount - 1);			// Set player die rolls and subtract cost from player balance
-				m_player.SetPlayerBalance(m_player.GetPlayerBalance() - (bettingAmount * gameSettings.m_costPerDice));
-
-				m_gameManager.OnStateChange(GameManager::ROLL_DICE);	// "Roll" the dice!
-			}
-			else {
-				printf_s("Betting Amount Invalid!\n");
-				IOHandler::inputBuffer = "0";
-			}
+			BettingScreenLogic();
 		}
 		break;
 	case GameManager::ROLL_DICE:
-		if (m_die.rollDurRemaining > 0.f) {	// Simulate duration of rolling a dice
-			m_die.rollDurRemaining -= Time::GetDeltaTime();
-		}
-		else {
-			m_die.ResetRollDelay();
-			if (m_die.RollDice() == 6) {	// Player won! - add coins to balance!
-				m_player.SetPlayerBalance(m_player.GetPlayerBalance() + gameSettings.m_rewardPayOut);
-				m_gameManager.OnStateChange(GameManager::WIN);
-			}								// Player lost! - nothing added
-			else m_gameManager.OnStateChange(GameManager::LOSS);
-		}
+		DiceRollingLogic();
 		break;
 	case GameManager::WIN:
 	case GameManager::LOSS:
-		if (IOHandler::lastInput == GameConstants::RETURN_KEY) {		// Return player back to betting menu
-			if (m_player.GetRollsRemaining() == 0) {					// when there are no more rolls left
-				m_gameManager.OnStateChange(GameManager::BETTING_MENU);
-			}
-			else {														// Otherwise, deduct a roll and go again
-				m_player.SetRollsRemaining(m_player.GetRollsRemaining() - 1);
-				m_gameManager.OnStateChange(GameManager::ROLL_DICE);
-			}
-		}
+		ResultsScreenLogic();
 		break;
-	default:
+	default:	// Should never be taken
 		assert(false);
 		break;
 	}
@@ -133,9 +87,27 @@ void MainGame::Render() {
 	case GameManager::LOSS:
 		RenderLossMenu();
 		break;
-	default:
+	default:	// Should never be taken
 		assert(false);
 		break;
+	}
+}
+
+void MainGame::MainMenuLogic() {
+	const unsigned potAmount = stoi(IOHandler::inputBuffer);
+
+	if (inputValid = (potAmount > 0)) {							// Check if the pot amount is valid
+		printf_s("Pot Amount Valid!\n");
+
+		m_player.SetPlayerBalance(potAmount);					// If so, set the balance and rolls remaining
+		m_player.SetRollsRemaining((int)floorf((float)potAmount / gameSettings.m_costPerDice));
+
+		IOHandler::inputBuffer = "0";							// Reset input buffer for betting screen
+		m_gameManager.OnStateChange(GameManager::BETTING_MENU);	// Change to betting screen
+	}
+	else {
+		printf_s("Pot Amount Invalid!\n");
+		IOHandler::inputBuffer = "0";
 	}
 }
 
@@ -147,6 +119,24 @@ void MainGame::RenderMainMenu() {
 		"\nPress <ESC> to exit...";
 
 	RenderMessage(mainMenuText);
+}
+
+void MainGame::BettingScreenLogic() {
+	const unsigned bettingAmount = stoi(IOHandler::inputBuffer);
+
+	if (inputValid = (bettingAmount > 0 &&						// Is the input valid and affordable?
+		bettingAmount <= (unsigned)(m_player.GetPlayerBalance() / gameSettings.m_costPerDice))) {
+		printf_s("Betting Amount Valid!\n");
+
+		m_player.SetRollsRemaining(bettingAmount - 1);			// Set player die rolls and subtract cost from player balance
+		m_player.SetPlayerBalance(m_player.GetPlayerBalance() - (bettingAmount * gameSettings.m_costPerDice));
+
+		m_gameManager.OnStateChange(GameManager::ROLL_DICE);	// "Roll" the dice!
+	}
+	else {
+		printf_s("Betting Amount Invalid!\n");
+		IOHandler::inputBuffer = "0";
+	}
 }
 
 void MainGame::RenderBettingScreen() {
@@ -165,11 +155,38 @@ void MainGame::RenderBettingScreen() {
 	RenderMessage(bettingMenuText);
 }
 
+void MainGame::DiceRollingLogic() {
+	if (m_die.rollDurRemaining > 0.f) {	// Simulate duration of rolling a dice
+		m_die.rollDurRemaining -= Time::GetDeltaTime();
+	}
+	else {
+		m_die.ResetRollDelay();
+		if (m_die.RollDice() == 6) {	// Player won! - add coins to balance!
+			m_player.SetPlayerBalance(m_player.GetPlayerBalance() + gameSettings.m_rewardPayOut);
+			m_gameManager.OnStateChange(GameManager::WIN);
+		}								// Player lost! - nothing added
+		else m_gameManager.OnStateChange(GameManager::LOSS);
+	}
+}
+
 void MainGame::RenderDiceRolling() {
 	std::string diceRollingText = "Sixes\nRolling Dice...\nTime Remaining: " + 
 		std::to_string(m_die.rollDurRemaining);
 
 	RenderMessage(diceRollingText);
+}
+
+void MainGame::ResultsScreenLogic()
+{
+	if (IOHandler::lastInput == GameConstants::RETURN_KEY) {		// Return player back to betting menu
+		if (m_player.GetRollsRemaining() == 0) {					// when there are no more rolls left
+			m_gameManager.OnStateChange(GameManager::BETTING_MENU);
+		}
+		else {														// Otherwise, deduct a roll and go again
+			m_player.SetRollsRemaining(m_player.GetRollsRemaining() - 1);
+			m_gameManager.OnStateChange(GameManager::ROLL_DICE);
+		}
+	}
 }
 
 void MainGame::RenderWinMenu() {

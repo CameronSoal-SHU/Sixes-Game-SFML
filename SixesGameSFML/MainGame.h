@@ -26,14 +26,20 @@ private:
 	void RenderMessage(const std::string& msg);
 	void RenderPlayerStats();
 
-	// Menus to render
+	// Menus to render (called in Render()) 
+	// with corresponding logic handlers (to be called in Update() when necessary)
+	void MainMenuLogic();
 	void RenderMainMenu();
+
+	void BettingScreenLogic();
 	void RenderBettingScreen();
 
 	// To be shown to immitate rolling dice
+	void DiceRollingLogic();
 	void RenderDiceRolling();
 
 	// Tell the player the result and whether they won or lost
+	void ResultsScreenLogic();
 	void RenderWinMenu();
 	void RenderLossMenu();
 };

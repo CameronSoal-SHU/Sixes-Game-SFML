@@ -13,8 +13,8 @@ MainGame::MainGame()
 {}
 
 void MainGame::Init(sf::RenderWindow & renWin) {
-	gameData.m_renderWindow = &renWin;
-	assert(gameData.m_font.loadFromFile("../Assets/Fonts/DroidSans.ttf"));
+	gameData.ptrRenderWindow = &renWin;
+	assert(gameData.font.loadFromFile("../Assets/Fonts/DroidSans.ttf"));
 
 	m_gameManager.Init(this);
 	IOHandler::inputBuffer = "0";	// Setup input buffer for pot amount input
@@ -22,7 +22,7 @@ void MainGame::Init(sf::RenderWindow & renWin) {
 
 void MainGame::TextEntered(sf::Uint32 input) {
 	if (input == GameConstants::ESCAPE_KEY)
-		gameData.m_renderWindow->close();
+		gameData.ptrRenderWindow->close();
 	else IOHandler::lastInput = input;
 }
 
@@ -82,10 +82,10 @@ void MainGame::Render() {
 		RenderDiceRolling();
 		break;
 	case GameManager::WIN:
-		RenderWinMenu();
+		RenderWinScreen();
 		break;
 	case GameManager::LOSS:
-		RenderLossMenu();
+		RenderLossScreen();
 		break;
 	default:	// Should never be taken
 		assert(false);
@@ -100,7 +100,7 @@ void MainGame::MainMenuLogic() {
 		printf_s("Pot Amount Valid!\n");
 
 		m_player.SetPlayerBalance(potAmount);					// If so, set the balance and rolls remaining
-		m_player.SetRollsRemaining((int)floorf((float)potAmount / gameSettings.m_costPerDice));
+		m_player.SetRollsRemaining((int)floorf((float)potAmount / gameSettings.costPerDice));
 
 		IOHandler::inputBuffer = "0";							// Reset input buffer for betting screen
 		m_gameManager.OnStateChange(GameManager::BETTING_MENU);	// Change to betting screen
@@ -113,8 +113,8 @@ void MainGame::MainMenuLogic() {
 
 void MainGame::RenderMainMenu() {
 	std::string mainMenuText = "Welcome to sixes!\nPay: " + 
-		std::to_string(gameSettings.m_costPerDice) + " Coin(s) per dice, throw a 6 to win: " + 
-		std::to_string(gameSettings.m_rewardPayOut) + "\nEnter how many coins you want in the pot: " +
+		std::to_string(gameSettings.costPerDice) + " Coin(s) per dice, throw a 6 to win: " + 
+		std::to_string(gameSettings.rewardPayOut) + "\nEnter how many coins you want in the pot: " +
 		IOHandler::inputBuffer + "\nEnter amount and press <Return> to continue..." + 
 		"\nPress <ESC> to exit...";
 
@@ -125,11 +125,11 @@ void MainGame::BettingScreenLogic() {
 	const unsigned bettingAmount = stoi(IOHandler::inputBuffer);
 
 	if (inputValid = (bettingAmount > 0 &&						// Is the input valid and affordable?
-		bettingAmount <= (unsigned)(m_player.GetPlayerBalance() / gameSettings.m_costPerDice))) {
+		bettingAmount <= (unsigned)(m_player.GetPlayerBalance() / gameSettings.costPerDice))) {
 		printf_s("Betting Amount Valid!\n");
 
 		m_player.SetRollsRemaining(bettingAmount - 1);			// Set player die rolls and subtract cost from player balance
-		m_player.SetPlayerBalance(m_player.GetPlayerBalance() - (bettingAmount * gameSettings.m_costPerDice));
+		m_player.SetPlayerBalance(m_player.GetPlayerBalance() - (bettingAmount * gameSettings.costPerDice));
 
 		m_gameManager.OnStateChange(GameManager::ROLL_DICE);	// "Roll" the dice!
 	}
@@ -140,7 +140,7 @@ void MainGame::BettingScreenLogic() {
 }
 
 void MainGame::RenderBettingScreen() {
-	std::string bettingMenuText = "Sixes\nHow much do you want to bet? (" + std::to_string(gameSettings.m_costPerDice) +
+	std::string bettingMenuText = "Sixes\nHow much do you want to bet? (" + std::to_string(gameSettings.costPerDice) +
 		" Coin(s) per die roll)\nYour pot stands at: " + std::to_string(m_player.GetPlayerBalance()) +
 		"\nBetting Amount: " + IOHandler::inputBuffer +
 		"\nPress <ESC> to cash out";
@@ -162,7 +162,7 @@ void MainGame::DiceRollingLogic() {
 	else {
 		m_die.ResetRollDelay();
 		if (m_die.RollDice() == 6) {	// Player won! - add coins to balance!
-			m_player.SetPlayerBalance(m_player.GetPlayerBalance() + gameSettings.m_rewardPayOut);
+			m_player.SetPlayerBalance(m_player.GetPlayerBalance() + gameSettings.rewardPayOut);
 			m_gameManager.OnStateChange(GameManager::WIN);
 		}								// Player lost! - nothing added
 		else m_gameManager.OnStateChange(GameManager::LOSS);
@@ -189,9 +189,9 @@ void MainGame::ResultsScreenLogic()
 	}
 }
 
-void MainGame::RenderWinMenu() {
+void MainGame::RenderWinScreen() {
 	std::string winMenuText = "\n\n\n\nYou won! " + 
-		std::to_string(gameSettings.m_rewardPayOut) +
+		std::to_string(gameSettings.rewardPayOut) +
 		" Coin(s) added to pot";
 
 	if (m_player.GetRollsRemaining() > 0) {
@@ -205,7 +205,7 @@ void MainGame::RenderWinMenu() {
 	RenderMessage(winMenuText);
 }
 
-void MainGame::RenderLossMenu() {
+void MainGame::RenderLossScreen() {
 	std::string lossMenuText = "\n\n\n\nYou lost! Better luck next time!";
 
 	if (m_player.GetRollsRemaining() > 0) {
@@ -220,9 +220,9 @@ void MainGame::RenderLossMenu() {
 }
 
 void MainGame::RenderMessage(const std::string& msg) {
-	sf::Text message = sf::Text(msg, gameData.m_font);
+	sf::Text message = sf::Text(msg, gameData.font);
 
-	gameData.m_renderWindow->draw(message);
+	gameData.ptrRenderWindow->draw(message);
 }
 
 void MainGame::RenderPlayerStats() {

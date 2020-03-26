@@ -19,9 +19,10 @@ public:
 	static GameSettings gameSettings;
 private:
 	GameManager m_gameManager;
-	bool inputValid = true;
 	Player m_player;
 	Dice m_die = Dice(1.25f);
+
+	bool inputValid = true;
 
 	void RenderMessage(const std::string& msg);
 	void RenderPlayerStats();
@@ -40,6 +41,6 @@ private:
 
 	// Tell the player the result and whether they won or lost
 	void ResultsScreenLogic();
-	void RenderWinMenu();
-	void RenderLossMenu();
+	void RenderWinScreen();
+	void RenderLossScreen();
 };

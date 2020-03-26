@@ -7,12 +7,12 @@ public:
 	Player();
 	~Player();
 
-	int GetPlayerBalance();
-	void SetPlayerBalance(int newBalance);
+	unsigned GetPlayerBalance() const;
+	void SetPlayerBalance(unsigned newBalance);
 
-	int GetRollsRemaining();
-	void SetRollsRemaining(int newRolls);
+	unsigned GetRollsRemaining() const;
+	void SetRollsRemaining(unsigned newRolls);
 private:
-	int m_playerBalance;
-	int m_rollsRemaining;
+	unsigned m_playerBalance;
+	unsigned m_rollsRemaining;
 };

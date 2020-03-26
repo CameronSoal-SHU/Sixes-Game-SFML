@@ -28,12 +28,12 @@ namespace GameConstants
 
 struct GameData
 {
-	sf::RenderWindow* m_renderWindow;
-	sf::Font m_font;
+	sf::RenderWindow* ptrRenderWindow;
+	sf::Font font;
 };
 
 struct GameSettings
 {
-	int m_costPerDice{ 1 };
-	int m_rewardPayOut{ 10 };
+	int costPerDice{ 1 };
+	int rewardPayOut{ 10 };
 };

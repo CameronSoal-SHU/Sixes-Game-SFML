@@ -1,7 +1,9 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 
-class Time
+// Static class to hold internal time information,
+// for example: delta time between frames
+static class Time
 {
 public:
 	static void ResetClock();
@@ -9,5 +11,5 @@ public:
 private:
 	static sf::Clock m_clock;
 	static float m_deltaTime;
-};
+} s_time;
 

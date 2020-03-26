@@ -1,7 +1,6 @@
 #include "Player.h"
 
 
-
 Player::Player()
 	: m_playerBalance(0), m_rollsRemaining(0)
 {}

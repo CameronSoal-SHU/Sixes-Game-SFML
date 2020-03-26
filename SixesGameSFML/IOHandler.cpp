@@ -4,21 +4,35 @@
 sf::Uint32 IOHandler::lastInput;
 std::string IOHandler::inputBuffer;
 
-bool IOHandler::WithinBounds(float val, float min, float max)
-{
-	return !(val < min || val > max); // Make sure value is within boundaries
-}
 
 bool IOHandler::WithinBounds(int val, int min, int max)
 {
-	return !(val < min || val > max); // Make sure value is within boundaries
+	// Make sure value is within boundaries
+	return !(val < min || val > max);
 }
 
 void IOHandler::AlphaNumericInput() { 
+	// Only remove a character if the input buffer is not empty
+	if (lastInput == GameConstants::BACKSPACE && inputBuffer.length() != 0) {
+		inputBuffer.erase(inputBuffer.end() - 1);
+	}
+	else {
+		if (WithinBounds(lastInput, GameConstants::NUM_MIN, GameConstants::ALPHA_LC_MAX)) {
+			inputBuffer += lastInput;
+		}
+	}
 }
 
 void IOHandler::AlphaInput() {
-
+	// Only remove a character if the input buffer is not empty
+	if (lastInput == GameConstants::BACKSPACE && inputBuffer.length() != 0) {
+		inputBuffer.erase(inputBuffer.end() - 1);
+	}
+	else {
+		if (WithinBounds(lastInput, GameConstants::ALPHA_UC_MIN, GameConstants::ALPHA_LC_MAX)) {
+			inputBuffer += lastInput;
+		}
+	}
 }
 
 void IOHandler::NumericInput() {

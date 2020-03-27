@@ -1,6 +1,10 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 
+/*
+List of constant "Magic Numbers" used for the game
+incl. Screen Dimensions, ascii limits, key values, etc.
+*/
 namespace GameConstants
 {
 	const int SCREEN_RES_X{ 1200 };
@@ -26,12 +30,19 @@ namespace GameConstants
 	const char NUM_MAX{ 57 };
 }
 
+/*
+Hold public references to data 
+used across the program
+*/
 struct GameData
 {
 	sf::RenderWindow* ptrRenderWindow;
 	sf::Font font;
 };
 
+/*
+Modifyable game settings used in-game
+*/
 struct GameSettings
 {
 	int costPerDice{ 1 };

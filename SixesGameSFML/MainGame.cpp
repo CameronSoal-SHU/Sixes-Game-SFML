@@ -9,15 +9,13 @@ GameManager::game_state GameManager::gameState;
 GameData MainGame::gameData;
 GameSettings MainGame::gameSettings;
 
-MainGame::MainGame()
-{}
-
-void MainGame::Init(sf::RenderWindow & renWin) {
-	gameData.ptrRenderWindow = &renWin;
+MainGame::MainGame(sf::RenderWindow& renWin) {
+	gameData.ptrRenderWindow = &renWin;		// Set the reference of the render window
+											// Attempt to load the font
 	assert(gameData.font.loadFromFile("../Assets/Fonts/DroidSans.ttf"));
 
-	m_gameManager.Init(this);
-	IOHandler::inputBuffer = "0";	// Setup input buffer for pot amount input
+	GameManager::GetInstance().Init(this);	// Setup GameManager with reference to this
+	IOHandler::inputBuffer = "0";			// Setup input buffer for pot amount input
 }
 
 void MainGame::TextEntered(sf::Uint32 input) {
@@ -27,11 +25,11 @@ void MainGame::TextEntered(sf::Uint32 input) {
 }
 
 void MainGame::Update() {
-	switch (m_gameManager.gameState) {
+	switch (GameManager::GetInstance().gameState) {
 	case GameManager::INIT:
 		break;
 	case GameManager::MAIN_MENU:
-		IOHandler::NumericInput();										// Only accept numeric inputs for pot amount
+		IOHandler::NumericInput();		// Only accept numeric inputs for pot amount
 
 		if (IOHandler::lastInput == GameConstants::RETURN_KEY) {
 			MainMenuLogic();
@@ -40,7 +38,8 @@ void MainGame::Update() {
 	case GameManager::BETTING_MENU:
 		IOHandler::NumericInput();
 
-		if (IOHandler::lastInput == GameConstants::RETURN_KEY && m_player.GetPlayerBalance() != 0) {
+		if (IOHandler::lastInput == GameConstants::RETURN_KEY && 
+			m_player.GetPlayerBalance() != 0) {
 			BettingScreenLogic();
 		}
 		break;
@@ -61,7 +60,7 @@ void MainGame::Update() {
 }
 
 void MainGame::Render() {
-	switch (m_gameManager.gameState) {
+	switch (GameManager::GetInstance().gameState) {
 	case GameManager::INIT:
 		break;
 	case GameManager::MAIN_MENU:
@@ -103,7 +102,8 @@ void MainGame::MainMenuLogic() {
 		m_player.SetRollsRemaining((int)floorf((float)potAmount / gameSettings.costPerDice));
 
 		IOHandler::inputBuffer = "0";							// Reset input buffer for betting screen
-		m_gameManager.OnStateChange(GameManager::BETTING_MENU);	// Change to betting screen
+																// Change to betting screen
+		GameManager::GetInstance().OnStateChange(GameManager::BETTING_MENU);	
 	}
 	else {
 		printf_s("Pot Amount Invalid!\n");
@@ -131,7 +131,7 @@ void MainGame::BettingScreenLogic() {
 		m_player.SetRollsRemaining(bettingAmount - 1);			// Set player die rolls and subtract cost from player balance
 		m_player.SetPlayerBalance(m_player.GetPlayerBalance() - (bettingAmount * gameSettings.costPerDice));
 
-		m_gameManager.OnStateChange(GameManager::ROLL_DICE);	// "Roll" the dice!
+		GameManager::GetInstance().OnStateChange(GameManager::ROLL_DICE);	// "Roll" the dice!
 	}
 	else {
 		printf_s("Betting Amount Invalid!\n");
@@ -163,9 +163,9 @@ void MainGame::DiceRollingLogic() {
 		m_die.ResetRollDelay();
 		if (m_die.RollDice() == 6) {	// Player won! - add coins to balance!
 			m_player.SetPlayerBalance(m_player.GetPlayerBalance() + gameSettings.rewardPayOut);
-			m_gameManager.OnStateChange(GameManager::WIN);
+			GameManager::GetInstance().OnStateChange(GameManager::WIN);
 		}								// Player lost! - nothing added
-		else m_gameManager.OnStateChange(GameManager::LOSS);
+		else GameManager::GetInstance().OnStateChange(GameManager::LOSS);
 	}
 }
 
@@ -180,11 +180,11 @@ void MainGame::ResultsScreenLogic()
 {
 	if (IOHandler::lastInput == GameConstants::RETURN_KEY) {		// Return player back to betting menu
 		if (m_player.GetRollsRemaining() == 0) {					// when there are no more rolls left
-			m_gameManager.OnStateChange(GameManager::BETTING_MENU);
+			GameManager::GetInstance().OnStateChange(GameManager::BETTING_MENU);
 		}
 		else {														// Otherwise, deduct a roll and go again
 			m_player.SetRollsRemaining(m_player.GetRollsRemaining() - 1);
-			m_gameManager.OnStateChange(GameManager::ROLL_DICE);
+			GameManager::GetInstance().OnStateChange(GameManager::ROLL_DICE);
 		}
 	}
 }
@@ -227,8 +227,9 @@ void MainGame::RenderMessage(const std::string& msg) {
 
 void MainGame::RenderPlayerStats() {
 	std::string playerStatsText = "Sixes\nDie Result: " + std::to_string(m_die.GetResult()) +
-		"\nRolls Remaining: " + std::to_string(m_player.GetRollsRemaining()) +
-		"\nPot: " + std::to_string(m_player.GetPlayerBalance());
+		"\nPot: " + std::to_string(m_player.GetPlayerBalance()) +
+		"\nRolls Remaining: " + std::to_string(m_player.GetRollsRemaining());
+		
 
 	RenderMessage(playerStatsText);
 }

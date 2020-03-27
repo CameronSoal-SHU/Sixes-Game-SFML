@@ -52,7 +52,6 @@ void IOHandler::NumericInput() {
 	}
 }
 
-// Reset the buffer and last input
 void IOHandler::Flush() {
 	inputBuffer = "";
 	lastInput = NULL;

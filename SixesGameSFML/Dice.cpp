@@ -3,7 +3,7 @@
 #include "Time.h"
 
 Dice::Dice() 
-	: m_dieRollDur(5.f), rollDurRemaining(5.f) {
+	: m_dieRollDur(0.f), rollDurRemaining(0.f) {
 }
 
 Dice::Dice(float rollDelay)
@@ -11,7 +11,8 @@ Dice::Dice(float rollDelay)
 }
 
 unsigned Dice::RollDice() {
-	m_dieResult = RandomNumberGenerator::GenerateRandomUnsigned(6);
+	// Generate a random number between 1 and 6
+	m_dieResult = RandomNumberGenerator::GenerateRandomUnsigned(1, 6);
 	return m_dieResult;
 }
 

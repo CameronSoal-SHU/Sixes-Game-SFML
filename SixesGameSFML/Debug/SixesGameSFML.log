@@ -1,6 +1,7 @@
 ﻿  Application.cpp
-  IOHandler.cpp
+  Dice.cpp
   MainGame.cpp
-  Source.cpp
+  RandomNumberGenerator.cpp
+  main.cpp
   Generating Code...
   SixesGameSFML.vcxproj -> C:\Users\Cameron\Documents\GitHub\Sixes-Game-SFML\Debug\SixesGameSFML.exe

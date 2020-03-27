@@ -1,16 +1,15 @@
 #include "Application.h"
-#include "Time.h"
 #include "RandomNumberGenerator.h"
+#include "Time.h"
 
 // Forward declarations
 sf::Clock Time::m_clock;
 float Time::m_deltaTime;
 
 Application::Application()
-	: m_renderWindow(sf::VideoMode(GameConstants::SCREEN_RES_X, GameConstants::SCREEN_RES_Y), "Sixes")
-{
+	: m_renderWindow(sf::VideoMode(GameConstants::SCREEN_RES_X, GameConstants::SCREEN_RES_Y), "Sixes"),
+	m_mainGame(m_renderWindow) {
 	RandomNumberGenerator::GenerateSeed();	// Seed for random values
-	m_mainGame.Init(m_renderWindow);
 }
 
 void Application::Run()
@@ -23,6 +22,7 @@ void Application::Run()
 		{
 			if (event.type == sf::Event::Closed) m_renderWindow.close();
 
+			// Check for user input
 			if (event.type == sf::Event::TextEntered)
 			{
 				if (event.text.unicode == GameConstants::ESCAPE_KEY) 

@@ -1,14 +1,15 @@
 #include "GameManager.h"
+#include <stdio.h>
 
 // Forward declaration(s)
 GameManager::game_state m_gameState;
 
-GameManager::GameManager()
-	: m_mainGamePtr(nullptr)
-{
-	OnStateChange(INIT);
-	printf_s("Game Initialised!\n");
-}
+//GameManager::GameManager()
+//	: m_mainGamePtr(nullptr)
+//{
+//	OnStateChange(INIT);
+//	printf_s("Game Initialised!\n");
+//}
 
 void GameManager::Init(MainGame* mainGamePtr)
 {

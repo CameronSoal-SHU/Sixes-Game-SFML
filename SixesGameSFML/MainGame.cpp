@@ -4,7 +4,7 @@
 
 #include <assert.h>
 
-// Forward declaration(s)
+// Static member variables
 GameManager::game_state GameManager::gameState;
 GameData MainGame::gameData;
 GameSettings MainGame::gameSettings;
@@ -99,7 +99,6 @@ void MainGame::MainMenuLogic() {
 		printf_s("Pot Amount Valid!\n");
 
 		m_player.SetPlayerBalance(potAmount);					// If so, set the balance and rolls remaining
-		m_player.SetRollsRemaining((int)floorf((float)potAmount / gameSettings.costPerDice));
 
 		IOHandler::inputBuffer = "0";							// Reset input buffer for betting screen
 																// Change to betting screen

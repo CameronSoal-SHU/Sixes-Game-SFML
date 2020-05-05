@@ -2,7 +2,7 @@
 #include "RandomNumberGenerator.h"
 #include "Time.h"
 
-// Forward declarations
+// Static member variables
 sf::Clock Time::m_clock;
 float Time::m_deltaTime;
 
